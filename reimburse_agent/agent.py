@@ -2,7 +2,7 @@ from typing import Any
 
 def ask_for_approval(purpose: str, amount: float) -> dict[str, Any]:
     """Ask for approval for the reimbursement."""
-    return {'status': 'pending', 'purpose' : purpose, 'amount': amount, 'ticket-id': 'approval-ticket-1'}
+    return {'status': 'pending', 'purpose' : purpose, 'amount': amount}
 
 def reimburse(purpose: str, amount: float) -> dict[str, Any]:
     """Reimburse the amount of money to the employee."""
@@ -41,13 +41,12 @@ if __name__ == "__main__":
         for event in runner.run(user_id=session.user_id, session_id=session.id,
                                 new_message=UserContent(request)):
             if event.content and event.content.parts:
-                part = event.content.parts[0]
-
-                if part.function_response:
-                    print(f"Function response: {part.function_response.response}")
-                    approval_request = part.function_response
-                elif part.text:
-                    print(f"Agent: {part.text}")
+                for part in event.content.parts:
+                    if part.function_response:
+                        print(f"Function response: {part.function_response.response}")
+                        approval_request = part.function_response
+                    elif part.text:
+                        print(f"Agent: {part.text}")
 
         result = input("Enter your response(approve or reject): ")
         approval_response = approval_request.model_copy(deep=True)
