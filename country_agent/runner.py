@@ -16,7 +16,9 @@ async def main():
         user_input = input("Country: ")
         if user_input.lower() == "exit": break
 
-        session = await runner.session_service.create_session(app_name=runner.app_name, user_id="user1", state={"country": user_input})
+        session = await runner.session_service.create_session(app_name=runner.app_name,
+                                                              user_id="user1",
+                                                              state={"country": user_input})
 
         print(f"{user_input}에 대해 궁금한 것을 질문하세요. 'exit' 입력 시 종료됩니다.")
         while True:

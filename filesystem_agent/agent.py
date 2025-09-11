@@ -1,6 +1,5 @@
 import os
-from google.adk.tools.mcp_tool import MCPToolset
-from google.adk.tools.mcp_tool import StdioConnectionParams
+from google.adk.tools.mcp_tool import MCPToolset, StdioConnectionParams
 from mcp.client.stdio import StdioServerParameters
 
 TARGET_FOLDER_PATH = ".."

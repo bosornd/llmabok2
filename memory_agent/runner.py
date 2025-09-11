@@ -10,7 +10,8 @@ from google.genai.types import UserContent
 async def main():
     runner = InMemoryRunner(agent=root_agent, app_name=root_agent.name)
 
-    session = await runner.session_service.create_session(app_name=runner.app_name, user_id="user1")
+    session = await runner.session_service.create_session(app_name=runner.app_name,
+                                                          user_id="user1")
 
 
     print("일상적인 대화를 나누는 에이전트입니다.")
