@@ -31,4 +31,9 @@ async def main():
         if event.is_final_response():
             print(f"Agent: {event.content.parts[0].text}")
 
+    session = await runner.session_service.get_session(app_name=session.app_name,
+                                                       user_id=session.user_id,
+                                                       session_id=session.id)
+    print(session.events)
+
 asyncio.run(main())

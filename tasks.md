@@ -48,7 +48,7 @@ adk web --reload_agents
 
 6. instruction으로 persona를 설정해 본다.
 ```python
-    instruction="너는 나의 친구야. 항상 편안한 말투로 대화해줘."
+    instruction="너는 나의 친구야. 편안한 말투로 대화해줘."
 ```
 - 이벤트를 확인해 본다.
     - request의 instruction이 수정된 것을 알 수 있다.
@@ -380,7 +380,7 @@ root_agent = SequentialAgent(name="calc_agent",
 fibonacci_agent = SequentialAgent(name="fibonacci_agent",
                             sub_agents=[JsonInputAgent(name="json_input_agent"),
                                         WhileAgent(name="fibonacci_while_agent",
-                                                   condition="len(sequence) <= number",
+                                                   condition="'sequence' not in locals() or len(sequence) <= number",,
                                                    sub_agents=[LambdaAgent(name="fibonacci_sequence_agent",
                                                                            func=fibonacci,
                                                                            input_keys=["sequence"],
@@ -456,7 +456,7 @@ Callbacks
 Define effective tool functions 
 
 
-## T18. 
+## T18. reimburse_agent
 * LongRunningFunctionTool을 이용해서 Human-in-the-loop 구현해 보자.
     - LongRunningFunctionTool은 함수 response가 발생할 때, Event Generation이 종료된다.
     - 도구의 반환값을 확인해서, runner.run()을 호출해서 계속해야 한다.
@@ -486,7 +486,7 @@ Define effective tool functions
                 print(f"Agent: {event.content.parts[0].text}")
 ```
 ```python
-    session = await session_service.get_session(app_name=session.app_name, user_id=session.user_id, session_id=session.id)
+    session = await runner.session_service.get_session(app_name=session.app_name, user_id=session.user_id, session_id=session.id)
     print(session.events)
 ```
 ---

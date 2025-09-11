@@ -11,4 +11,15 @@ summarizer = Agent(
 root_agent = Agent(
     name="summary_agent",
     model="gemini-2.0-flash",
+    instruction="""당신은 유용한 도우미입니다.
+        사용자가 텍스트 요약을 요청하면 'summarizer'에게 요청하세요.""",
+    sub_agents=[summarizer],
+)
+
+root_agent = Agent(
+    name="summary_agent",
+    model="gemini-2.0-flash",
+    instruction="""당신은 유용한 도우미입니다.
+        사용자가 텍스트 요약을 요청하면 'summarizer' 도구를 사용하세요.""",
+    tools=[AgentTool(agent=summarizer)],
 )

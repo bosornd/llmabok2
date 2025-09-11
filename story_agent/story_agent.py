@@ -22,3 +22,20 @@ class StoryAgent(BaseAgent):
         async for event in self.generator.run_async(ctx):
             yield event
 
+        running = True
+        times_looped = 0
+        while running and (not self.max_iterations or times_looped < self.max_iterations):
+            times_looped += 1
+
+            # Generate criticism
+            async for event in self.critic.run_async(ctx):
+                yield event
+
+            if ctx.session.state.get("criticism") == "No major issues found.":
+                # If no major issues found, exit the loop
+                break
+
+            # Generate revision
+            async for event in self.reviser.run_async(ctx):
+                yield event
+
