@@ -110,6 +110,8 @@ def add(a, b):
     - LLM은 이를 근거로 함수를 호출해서 사용하게 된다.
     - LLM이 제대로 사용할 수 있도록 description을 잘 작성해야 한다.
     - 또한 instruction에도 어떤 상황에 도구를 사용해햐 할 지를 명확히 할 수록 좋다.
+- "이전 결과를 3으로 나눠본다."
+    - 이전 대화 내용이 계속 유지되는 것을 확인할 수 있다.
 
 ## T3. search_agent
 이번에는 구글 검색을 이용하는 RAG 에이전트를 만들어 보자.
@@ -194,10 +196,17 @@ from google.adk.tools import google_search
 3. 이벤트를 확인해 본다.
 * 사용자 대화 이벤트 --> 모델 대화 이벤트 --> ...
 
-4. math 에이전트에 runner를 만들어서 동작해 본다.
+4. **math 에이전트**에 runner를 만들어서 동작해 본다.
 * 이벤트를 확인해 보면, tool이 어떻게 사용되는지도 확인할 수 있다.
 ---
 발표자료에서 시퀀스 다이어그램으로 설명한다.
+
+Event -> Content
+Event -> EventActions
+에 대해 설명한다.
+
+??? 솔직히 Event가 LlmResponse를 상속하는 것은 적절하지 않다. --> Liskov Substitution Principle 오류
+??? Part, EventActions도 확장되는 모듈이 Optional로 구성되어 있다. 확장성이 좋지 않다. <-- OCP 오류
 
 
 ## T5. country_agent
@@ -221,10 +230,16 @@ from google.adk.tools import google_search
                                     user_id="user1", state={"country": user_input})
 ```
 ---
-LangChain과 ADK의 비교
-Runner, SessionService, Session... 의 관계
+* LangChain과 ADK의 비교
+* Runner, SessionService, Session... 의 관계
+    - EventActions의 설계가 좋지 않은 점은, EventAction의 항목과 관련된 내용이 분산되어 있다는 점이다.
+        - state_delta는 session_service가 append_event() 함수에서 event를 추가하면서 state가 갱신된다.
+        - 그렇다면 transfer_to_agent는? BaseLlmFlow에서 처리된다. 이는 LlmAgent의 기본 동작이다. 즉, LlmAgent에서 처리된다.
+        - escalate는? LoopAgent에서 처리된다. LoopAgent는 에이전트를 반복적으로 수행하는데, 반복을 종료하고 싶을 때에 EventActions.escalate를 True로 설정하면 반복이 종료된다.
+        - 새로운 형태의 Agent가 추가되면서, 새로운 서비스가 추가되면서 EventActions는 수정될 수 밖에 없다. ==> 확장성이 좋지 않다. ==> 유지보수를 어렵게 한다.
 
-ADK의 Agent 정의와 분류
+
+* ADK의 Agent 정의와 분류
 
 ## T6. country_agent with structured data
 * LLM은 자연어 입출력을 제공한다.
